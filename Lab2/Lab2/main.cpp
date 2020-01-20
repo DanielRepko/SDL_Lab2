@@ -74,18 +74,23 @@ void MoveSprites(SDL_Window * window, SDL_Renderer * renderer, SDL_Texture * spr
 
 	// Move the sprite, bounce at the wall, and draw
 	for (i = 0; i < NUM_SPRITES; ++i) {
+		
 		position = &positions[i];
 		velocity = &velocities[i];
-		position->x += velocity->x;
-		if ((position->x < 0) || (position->x >= (window_w - sprite_w))) {
+		position->x += velocity->x;			
+
+		if ((position->x < 0) || (position->x >= (window_w - sprite_w)))
+		{
 			velocity->x = -velocity->x;
 			position->x += velocity->x;
 		}
 		position->y += velocity->y;
-		if ((position->y < 0) || (position->y >= (window_h - sprite_h))) {
+		if ((position->y < 0) || (position->y >= (window_h - sprite_h)))
+		{
 			velocity->y = -velocity->y;
 			position->y += velocity->y;
 		}
+		
 
 		// Blit the sprite onto the screen
 		SDL_RenderCopy(renderer, sprite, NULL, position);
@@ -127,8 +132,24 @@ int main(int argc, char *argv[])
 		positions[i].y = rand() % (WINDOW_HEIGHT - sprite_h);
 		positions[i].w = sprite_w;
 		positions[i].h = sprite_h;
-		velocities[i].x = 0;
-		velocities[i].y = 0;
+
+		//setting the initial velocity for the different sprites
+		if (i == 0)
+		{
+			velocities[i].x = 1;
+			velocities[i].y = 0;
+		}
+		else if (i == 1)
+		{
+			velocities[i].x = 0;
+			velocities[i].y = 1;
+		}
+		else
+		{
+			velocities[i].x = 0;
+			velocities[i].y = 0;
+		}
+		
 		while (!velocities[i].x && !velocities[i].y) {
 			velocities[i].x = (rand() % (MAX_SPEED * 2 + 1)) - MAX_SPEED;
 			velocities[i].y = (rand() % (MAX_SPEED * 2 + 1)) - MAX_SPEED;
@@ -144,6 +165,26 @@ int main(int argc, char *argv[])
 				done = 1;
 			}
 		}
+
+		//adding onto the speed of the first two sprites
+		if (velocities[0].x >= 1)
+		{
+			velocities[0].x += 1;
+		}
+		else
+		{
+			velocities[0].x -= 1;
+		}
+
+		if (velocities[1].y >= 1)
+		{
+			velocities[1].y += 1;
+		}
+		else
+		{
+			velocities[1].y -= 1;
+		}
+
 		MoveSprites(window, renderer, sprite);
 		SDL_Delay(20);//changed to 20 to slow down the render speed
 	}
